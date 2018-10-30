@@ -50,6 +50,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
+
 //Check the dependencies necessary to make these imports in
 //the build.gradle file
 //See tutorial here: https://github.com/dialogflow/dialogflow-android-client
