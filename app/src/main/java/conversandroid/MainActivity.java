@@ -44,6 +44,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -68,10 +69,11 @@ public class MainActivity extends VoiceActivity {
     private static final Integer ID_PROMPT_INFO = 1;
 
     private long startListeningTime = 0; // To skip errors (see processAsrError method)
+    TextView responseText;
 
     //Connection to DialogFlow
     private AIDataService aiDataService=null;
-    private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";   //TODO: INSERT YOUR ACCESS TOKEN
+    private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";
             // https://dialogflow.com/docs/reference/agent/#obtaining_access_tokens)
 
     @Override
@@ -83,6 +85,8 @@ public class MainActivity extends VoiceActivity {
 
         //Initialize the speech recognizer and synthesizer
         initSpeechInputOutput(this);
+
+        responseText = (TextView) findViewById(R.id.responseText);
 
         //Set up the speech button
         setSpeakButton();
@@ -324,14 +328,14 @@ public class MainActivity extends VoiceActivity {
                 try {
                     final AIRequest aiRequest = new AIRequest(request);
                     final AIResponse response = aiDataService.request(aiRequest);
-                    Log.d(LOGTAG,"Request: "+aiRequest);
-                    Log.d(LOGTAG,"Response: "+response);
+                    Log.d(LOGTAG,"Petición: "+ aiRequest);
+                    Log.d(LOGTAG,"Respuesta: "+ response);
 
 
                     return response;
                 } catch (AIServiceException e) {
                     try {
-                        speak("Could not retrieve a response from DialogFlow", "ES", ID_PROMPT_INFO);
+                        speak("No se pudo obtener una respuesta de DialogFlow", "ES", ID_PROMPT_INFO);
                         Log.e(LOGTAG,"Problems retrieving a response");
                     } catch (Exception ex) {
                         Log.e(LOGTAG, "Spanish not available for TTS, default language used instead");
@@ -356,6 +360,7 @@ public class MainActivity extends VoiceActivity {
                     Log.d(LOGTAG,"Action: " + result.getAction());
 
                     final String chatbotResponse = result.getFulfillment().getSpeech();
+                    responseText.setText(chatbotResponse);
                     try {
                         speak(chatbotResponse, "EN", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
