@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Chatbot</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!-- Texts -->
+    <string name="speechbtn_default">Presiona para Hablar</string>
+    <string name="speechbtn_listening">Listening...</string>
+    <string name="initial_prompt"></string>
+
+    <string name="check_internet_connection">Please check your Internet connection</string>
+
+    <string name="asr_permission">TalkBack must access the microphone in order to perform speech recognition</string>
+    <string name="asr_permission_notgranted">Sorry, TalkBack cannot work without accessing the microphone</string>
+    <string name="asr_notsupported">ASR not supported</string>
+    <string name="asr_results">Results ready :D</string>
+    <string name="asr_invalid_params">Invalid parameters for recognition</string>
+    <string name="asr_error">Speech recognition error</string>
+    <string name="asr_readyforspeech">Ready to hear you speak!</string>
+    <string name="asr_beginningofspeech">You have started talking ;)</string>
+    <string name="asr_buffer">Buffer received</string>
+    <string name="asr_endofspeech">You have stopped talking</string>
+    <string name="asr_parcialresult">Parcial results received</string>
+    <string name="asr_error_audio"> Audio recording error</string>
+    <string name="asr_error_client">Unknown client side error</string>
+    <string name="asr_error_permissions">Insufficient permissions</string>
+    <string name="asr_error_network">Network related error</string>
+    <string name="asr_error_networktimeout">Network operation timed out</string>
+    <string name="asr_error_nomatch">No recognition result matched</string>
+    <string name="asr_error_recognizerbusy">Recognition service busy</string>
+    <string name="asr_error_server">Server sends error status</string>
+    <string name="asr_error_speechtimeout">No speech input detected</string>
+    <string name="asr_notstarted">Speech recognition could not be started</string>
+
+
+    <!-- Colors -->
+    <color name="speechbtn_default">#EEEEEE</color>
+    <color name="speechbtn_listening">#99FFBB</color>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+</resources>
