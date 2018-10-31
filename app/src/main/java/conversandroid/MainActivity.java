@@ -32,6 +32,7 @@ package conversandroid;
  */
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -40,11 +41,14 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -69,6 +73,10 @@ public class MainActivity extends VoiceActivity {
 
     private long startListeningTime = 0; // To skip errors (see processAsrError method)
 
+    TextView respuesta;
+    ImageButton botonGrabar;
+    Toolbar barraSuperior;
+
     //Connection to DialogFlow
     private AIDataService aiDataService=null;
     private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";   //TODO: INSERT YOUR ACCESS TOKEN
@@ -86,6 +94,10 @@ public class MainActivity extends VoiceActivity {
 
         //Set up the speech button
         setSpeakButton();
+
+        barraSuperior = (Toolbar) findViewById(R.id.toolbar);
+        respuesta = (TextView) findViewById(R.id.respuesta);
+        botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
 
         //Dialogflow configuration parameters
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN,
@@ -107,10 +119,10 @@ public class MainActivity extends VoiceActivity {
             public void onClick(View v) {
                 //Ask the user to speak
                 try {
-                    speak(getResources().getString(R.string.initial_prompt), "EN", ID_PROMPT_QUERY);
+                    speak(getResources().getString(R.string.initial_prompt), "ES", ID_PROMPT_QUERY);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(getApplicationContext(),"holiiis", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Grabando audio", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     });
@@ -356,8 +368,9 @@ public class MainActivity extends VoiceActivity {
                     Log.d(LOGTAG,"Action: " + result.getAction());
 
                     final String chatbotResponse = result.getFulfillment().getSpeech();
+                    respuesta.setText(chatbotResponse);
                     try {
-                        speak(chatbotResponse, "EN", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
+                        speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
                     } catch (Exception e) { Log.e(LOGTAG, "TTS not accessible"); }
 
@@ -403,7 +416,7 @@ public class MainActivity extends VoiceActivity {
 
     @Override
     public void onTTSDone(String uttId) {
-
+        botonGrabar.setBackgroundResource(R.drawable.round_botton);
 
     }
 
@@ -425,5 +438,6 @@ public class MainActivity extends VoiceActivity {
     @Override
     public void onTTSStart(String uttId) {
         Log.d(LOGTAG, "TTS starts speaking");
+        botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
     }
 }
