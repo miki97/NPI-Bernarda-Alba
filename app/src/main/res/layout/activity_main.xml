@@ -59,7 +59,15 @@
         android:text="Museo de Bernarda Alba"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-
+    <Button
+        android:id="@+id/qr_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="441dp"
+        android:layout_toEndOf="@+id/speech_btn"
+        android:text="QR" />
 
 
 </RelativeLayout>

@@ -32,10 +32,12 @@ package conversandroid;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -48,8 +50,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
+//import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -63,9 +65,10 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
-import conversandroid.chatbot.R;
 
-public class MainActivity extends VoiceActivity {
+
+import conversandroid.chatbot.R;
+public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     private static final String LOGTAG = "CHATBOT";
     private static final Integer ID_PROMPT_QUERY = 0;
@@ -76,7 +79,8 @@ public class MainActivity extends VoiceActivity {
     TextView respuesta;
     ImageButton botonGrabar;
     Toolbar barraSuperior;
-
+    Button botonQR;
+    Shaker shaker;
     //Connection to DialogFlow
     private AIDataService aiDataService=null;
     private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";   //TODO: INSERT YOUR ACCESS TOKEN
@@ -85,7 +89,7 @@ public class MainActivity extends VoiceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
         //Set layout
         setContentView(R.layout.activity_main);
 
@@ -95,10 +99,13 @@ public class MainActivity extends VoiceActivity {
         //Set up the speech button
         setSpeakButton();
 
+
         barraSuperior = (Toolbar) findViewById(R.id.toolbar);
         respuesta = (TextView) findViewById(R.id.respuesta);
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
+        botonQR = (Button) findViewById(R.id.qr_button);
 
+        setBotonQR();
         //Dialogflow configuration parameters
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN,
                 AIConfiguration.SupportedLanguages.Spanish,
@@ -134,6 +141,43 @@ public class MainActivity extends VoiceActivity {
 
     }
 
+    private void setBotonQR(){
+        botonQR.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                try {
+
+                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+
+                    startActivityForResult(intent, 0);
+
+                } catch (Exception e) {
+
+                    Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+                    startActivity(marketIntent);
+
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+
+            if (resultCode == RESULT_OK) {
+                String contents = data.getStringExtra("SCAN_RESULT");
+            }
+            if(resultCode == RESULT_CANCELED){
+                //handle cancel
+            }
+        }
+    }
     /**
      * Explain to the user why we need their permission to record audio on the device
      * See the checkASRPermission in the VoiceActivity class
@@ -439,5 +483,17 @@ public class MainActivity extends VoiceActivity {
     public void onTTSStart(String uttId) {
         Log.d(LOGTAG, "TTS starts speaking");
         botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+    }
+
+    @Override
+    public void shakingStarted() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.google.es"));
+        this.startActivity(intent);
+    }
+
+    @Override
+    public void shakingStopped() {
+
     }
 }
