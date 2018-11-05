@@ -31,8 +31,12 @@ package conversandroid;
  * @version 4.0, 04/06/18
  */
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
@@ -40,11 +44,17 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -52,8 +62,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
+
+//los que repito
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+
 
 //Check the dependencies necessary to make these imports in
 //the build.gradle file
@@ -76,11 +118,21 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     private long startListeningTime = 0; // To skip errors (see processAsrError method)
 
+
     TextView respuesta;
     ImageButton botonGrabar;
     Toolbar barraSuperior;
     Button botonQR;
     Shaker shaker;
+
+    //attributes for the qr reader
+    private static final int PHOTO_REQUEST = 10;
+    private BarcodeDetector detector;
+    private Uri imageUri;
+    private static final int REQUEST_WRITE_PERMISSION = 20;
+    private static final String SAVED_INSTANCE_URI = "uri";
+    private static final String SAVED_INSTANCE_RESULT = "result";
+
     //Connection to DialogFlow
     private AIDataService aiDataService=null;
     private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";   //TODO: INSERT YOUR ACCESS TOKEN
@@ -105,13 +157,29 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
         botonQR = (Button) findViewById(R.id.qr_button);
 
+        //set th qr button
         setBotonQR();
+
+        //configure de qrdetector
+        if (savedInstanceState != null) {
+            imageUri = Uri.parse(savedInstanceState.getString(SAVED_INSTANCE_URI));
+            //scanResults.setText(savedInstanceState.getString(SAVED_INSTANCE_RESULT));
+        }
+        detector = new BarcodeDetector.Builder(getApplicationContext())
+                .setBarcodeFormats(Barcode.DATA_MATRIX | Barcode.QR_CODE)
+                .build();
+        if (!detector.isOperational()) {
+            Toast.makeText(getApplicationContext(),"No se pudo configurar el detector!", Toast.LENGTH_SHORT).show();
+        }
+
+
         //Dialogflow configuration parameters
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN,
                 AIConfiguration.SupportedLanguages.Spanish,
                 AIConfiguration.RecognitionEngine.System);
 
         aiDataService = new AIDataService(config);
+
     }
 
     /**
@@ -138,31 +206,35 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 }
             }
         });
+    }
+
+    /** Funcion que activa el boton de QR
+    */
+    private void setBotonQR(){
+        botonQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityCompat.requestPermissions(MainActivity.this, new
+                        String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+            }
+        });
 
     }
 
-    private void setBotonQR(){
-        botonQR.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                try {
-
-                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
-
-                    startActivityForResult(intent, 0);
-
-                } catch (Exception e) {
-
-                    Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
-                    startActivity(marketIntent);
-
+    /** Funcion para recibir la peticion de permisos de escritura, es decir vamos
+        a leer un codigo qr
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePicture();
+                } else {
+                    Toast.makeText(MainActivity.this, "Permiso denegado!", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+        }
     }
 
     @Override
@@ -175,6 +247,35 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             }
             if(resultCode == RESULT_CANCELED){
                 //handle cancel
+            }
+        }
+        if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
+            launchMediaScanIntent();
+            try {
+
+                //Toast.makeText(MainActivity.this, "DENTRO TRY", Toast.LENGTH_SHORT).show();
+                Bitmap bitmap = decodeBitmapUri(this,imageUri);
+
+                //decodeBitmapUri(this, imageUri);
+                if (detector.isOperational() && bitmap != null) {
+                    //Toast.makeText(MainActivity.this, "DENTRO DEIF", Toast.LENGTH_SHORT).show();
+                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                    SparseArray<Barcode> barcodes = detector.detect(frame);
+                    for (int index = 0; index < barcodes.size(); index++) {
+                        Barcode code = barcodes.valueAt(index);
+                        String codigo = code.displayValue + "\n";
+                        //Toast.makeText(MainActivity.this, codigo, Toast.LENGTH_SHORT).show();
+                        sendMsgToChatBot(codigo);
+                    }
+                    if (barcodes.size() == 0) {
+                        Toast.makeText(MainActivity.this, "No se ha identificado nada", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "No se puede configurar el detector", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to load Image", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
@@ -495,5 +596,47 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     public void shakingStopped() {
 
+    }
+
+    //Funcion para tomar una foto para la funcion de lectura qr
+    private void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo = new File(Environment.getExternalStorageDirectory(), "picture.jpg");
+        imageUri = FileProvider.getUriForFile(MainActivity.this,
+                conversandroid.chatbot.BuildConfig.APPLICATION_ID+ ".provider", photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, PHOTO_REQUEST);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (imageUri != null) {
+            outState.putString(SAVED_INSTANCE_URI, imageUri.toString());
+            //outState.putString(SAVED_INSTANCE_RESULT, scanResults.getText().toString());
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    private void launchMediaScanIntent() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(imageUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    private Bitmap decodeBitmapUri(Context ctx, Uri uri) throws FileNotFoundException {
+        int targetW = 600;
+        int targetH = 600;
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(ctx.getContentResolver().openInputStream(uri), null, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        return BitmapFactory.decodeStream(ctx.getContentResolver()
+                .openInputStream(uri), null, bmOptions);
     }
 }
