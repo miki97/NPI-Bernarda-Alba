@@ -34,8 +34,10 @@ public class Shaker {
 
     private void isShaking() {
         long now = SystemClock.uptimeMillis();
+        System.out.println("no" + now);
+        System.out.println("last" + lastShakeTimestamp);
         try {
-            if (lastShakeTimestamp == 0) {
+            if (now-lastShakeTimestamp > 5000 || lastShakeTimestamp == 0) {
                 lastShakeTimestamp = now;
 
                 if (cb != null) {
@@ -50,17 +52,17 @@ public class Shaker {
     }
 
     private void isNotShaking() {
-        long now = SystemClock.uptimeMillis();
-
-        if (lastShakeTimestamp > 0) {
-            if (now - lastShakeTimestamp > gap) {
-                lastShakeTimestamp = 0;
-
-                if (cb != null) {
-                    cb.shakingStopped();
-                }
-            }
-        }
+//        long now = SystemClock.uptimeMillis();
+//
+//        if (lastShakeTimestamp > 0) {
+//            if (now - lastShakeTimestamp > gap) {
+//                lastShakeTimestamp = 0;
+//
+//                if (cb != null) {
+//                    cb.shakingStopped();
+//                }
+//            }
+//        }
     }
 
     public interface Callback {

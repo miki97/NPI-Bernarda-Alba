@@ -39,6 +39,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -58,10 +59,20 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import android.widget.Toolbar;
-import android.support.v7.widget.Toolbar;
+import android.widget.Toolbar;
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.app.Activity;
+import android.widget.TextView;
+
+
 
 //los que repito
 import android.Manifest;
@@ -84,6 +95,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Random;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -112,17 +124,21 @@ import ai.api.model.Result;
 import conversandroid.chatbot.R;
 public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
-    private static final String LOGTAG = "CHATBOT";
+    private static final String LOGTAG = "Bernarda Alba";
     private static final Integer ID_PROMPT_QUERY = 0;
     private static final Integer ID_PROMPT_INFO = 1;
+    private String[] curiosidades = new String[4];
 
     private long startListeningTime = 0; // To skip errors (see processAsrError method)
+
+    String textLIGHT_available, textLIGHT_reading;
 
 
     TextView respuesta;
     ImageButton botonGrabar;
     Toolbar barraSuperior;
-    Button botonQR;
+    ImageButton botonQR;
+    ImageView bernarda;
     Shaker shaker;
 
     //attributes for the qr reader
@@ -147,6 +163,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
         //Initialize the speech recognizer and synthesizer
         initSpeechInputOutput(this);
+        inicializarSensorLuz();
 
         //Set up the speech button
         setSpeakButton();
@@ -155,10 +172,19 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         barraSuperior = (Toolbar) findViewById(R.id.toolbar);
         respuesta = (TextView) findViewById(R.id.respuesta);
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
-        botonQR = (Button) findViewById(R.id.qr_button);
+        botonQR = (ImageButton) findViewById(R.id.qr_button);
+        bernarda = (ImageView) findViewById(R.id.bernarda);
+
+
+        setActionBar(barraSuperior);
 
         //set th qr button
         setBotonQR();
+
+        curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de bernarda, ¡Silencio, silencio he dicho!";
+        curiosidades[1] = "Uno de los temas de la obtra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
+        curiosidades[2] = "Cada nombre de las 5 hijas tiene un significado, pregúntame por cada uno de los nombres y te ayudaré";
+        curiosidades[3] = "Toda la obra transcure en la casa, un espacio cerrado comparable con un convento, un presidio o incluso un infierno";
 
         //configure de qrdetector
         if (savedInstanceState != null) {
@@ -207,6 +233,58 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             }
         });
     }
+
+    private void inicializarSensorLuz(){
+
+        SensorManager mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+
+        Sensor LightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if(LightSensor != null){
+            System.out.println("available");
+            mySensorManager.registerListener(
+                    LightSensorListener,
+                    LightSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+
+        }else{
+            System.out.println("not available");
+        }
+    }
+
+    private final SensorEventListener LightSensorListener
+            = new SensorEventListener(){
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if(event.sensor.getType() == Sensor.TYPE_LIGHT){
+                System.out.println(event.values[0]);
+                if(event.values[0] < 8) {
+                    // DARK
+                    findViewById(R.id.relativeLayout).setBackgroundColor(Color.rgb(50,50,50));
+                    respuesta.setTextColor(Color.WHITE);
+                    barraSuperior.setBackgroundColor(getResources().getColor(R.color.darkBar));
+                    bernarda.setImageResource(R.drawable.ic_bernarda_alba_white);
+                    botonGrabar.setBackgroundResource(R.drawable.round_botton_dark);
+                } else {
+                    // WHITE
+                    findViewById(R.id.relativeLayout).setBackgroundColor(Color.WHITE);
+                    respuesta.setTextColor(Color.BLACK);
+                    barraSuperior.setBackgroundColor(getResources().getColor(R.color.lightBar));
+                    bernarda.setImageResource(R.drawable.ic_bernarda_alba);
+                    botonGrabar.setBackgroundResource(R.drawable.round_botton);
+                }
+            }
+        }
+
+    };
+
+
 
     /** Funcion que activa el boton de QR
     */
@@ -588,9 +666,15 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     @Override
     public void shakingStarted() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://www.google.es"));
-        this.startActivity(intent);
+        //intent.setData(Uri.parse("http://www.google.es"));ç
+        Random rand = new Random();
+        int  n = rand.nextInt(curiosidades.length) ;
+        final String chatbotResponse = curiosidades[n];
+        respuesta.setText(chatbotResponse);
+        try {
+            speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
+            //so that the last system answer is synthesized using ID_PROMPT_INFO.
+        } catch (Exception e) { Log.e(LOGTAG, "TTS not accessible"); }
     }
 
     @Override
