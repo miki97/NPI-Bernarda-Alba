@@ -38,8 +38,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -51,11 +49,10 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,6 +60,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import android.widget.PopupMenu;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -136,6 +134,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     TextView respuesta;
     ImageButton botonGrabar;
+    ImageButton boton_ayuda;
     Toolbar barraSuperior;
     ImageButton botonQR;
     ImageView bernarda;
@@ -151,7 +150,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     //Connection to DialogFlow
     private AIDataService aiDataService=null;
-    private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";   //TODO: INSERT YOUR ACCESS TOKEN
+    private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";
             // https://dialogflow.com/docs/reference/agent/#obtaining_access_tokens)
 
     @Override
@@ -168,23 +167,23 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //Set up the speech button
         setSpeakButton();
 
-
+        boton_ayuda = (ImageButton) findViewById(R.id.help_button);
         barraSuperior = (Toolbar) findViewById(R.id.toolbar);
         respuesta = (TextView) findViewById(R.id.respuesta);
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
         botonQR = (ImageButton) findViewById(R.id.qr_button);
         bernarda = (ImageView) findViewById(R.id.bernarda);
 
-
+        initializeHelpButton();
         setActionBar(barraSuperior);
 
         //set th qr button
         setBotonQR();
 
-        curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de bernarda, ¡Silencio, silencio he dicho!";
-        curiosidades[1] = "Uno de los temas de la obtra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
+        curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de Bernarda, ¡Silencio, silencio he dicho!";
+        curiosidades[1] = "Uno de los temas de la obra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
         curiosidades[2] = "Cada nombre de las 5 hijas tiene un significado, pregúntame por cada uno de los nombres y te ayudaré";
-        curiosidades[3] = "Toda la obra transcure en la casa, un espacio cerrado comparable con un convento, un presidio o incluso un infierno";
+        curiosidades[3] = "Toda la obra transcurre en la casa, un espacio cerrado comparable con un convento, un presidio o incluso un infierno";
 
         //configure de qrdetector
         if (savedInstanceState != null) {
@@ -207,6 +206,31 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         aiDataService = new AIDataService(config);
 
     }
+
+
+    private void initializeHelpButton(){
+        boton_ayuda.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(MainActivity.this, boton_ayuda);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });//closing the setOnClickListener method
+    }
+
 
     /**
      * Initializes the search button and its listener. When the button is pressed, a feedback is shown to the user
@@ -265,26 +289,29 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             if(event.sensor.getType() == Sensor.TYPE_LIGHT){
                 System.out.println(event.values[0]);
                 if(event.values[0] < 8) {
-                    // DARK
-                    findViewById(R.id.relativeLayout).setBackgroundColor(Color.rgb(50,50,50));
-                    respuesta.setTextColor(Color.WHITE);
-                    barraSuperior.setBackgroundColor(getResources().getColor(R.color.darkBar));
-                    bernarda.setImageResource(R.drawable.ic_bernarda_alba_white);
-                    botonGrabar.setBackgroundResource(R.drawable.round_botton_dark);
+                    setDarkTheme();
                 } else {
-                    // WHITE
-                    findViewById(R.id.relativeLayout).setBackgroundColor(Color.WHITE);
-                    respuesta.setTextColor(Color.BLACK);
-                    barraSuperior.setBackgroundColor(getResources().getColor(R.color.lightBar));
-                    bernarda.setImageResource(R.drawable.ic_bernarda_alba);
-                    botonGrabar.setBackgroundResource(R.drawable.round_botton);
+                    setClearTheme();
                 }
             }
         }
 
     };
 
-
+    private void setDarkTheme() {
+        findViewById(R.id.relativeLayout).setBackgroundColor(Color.rgb(50,50,50));
+        respuesta.setTextColor(Color.WHITE);
+        barraSuperior.setBackgroundColor(getResources().getColor(R.color.darkBar));
+        bernarda.setImageResource(R.drawable.ic_bernarda_alba_white);
+        botonGrabar.setBackgroundResource(R.drawable.round_botton_dark);
+    }
+    private void setClearTheme() {
+        findViewById(R.id.relativeLayout).setBackgroundColor(Color.WHITE);
+        respuesta.setTextColor(Color.BLACK);
+        barraSuperior.setBackgroundColor(getResources().getColor(R.color.lightBar));
+        bernarda.setImageResource(R.drawable.ic_bernarda_alba);
+        botonGrabar.setBackgroundResource(R.drawable.round_botton);
+    }
 
     /** Funcion que activa el boton de QR
     */
@@ -296,7 +323,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                         String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
             }
         });
-
     }
 
     /** Funcion para recibir la peticion de permisos de escritura, es decir vamos
@@ -379,7 +405,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      * If there is any error, the <code>onAsrError</code> method is invoked.
      */
     private void startListening() {
-
         if (deviceConnectedToInternet()) {
             try {
 
@@ -405,7 +430,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 } catch (Exception ex) {
                     Log.e(LOGTAG, "TTS not accessible");
                 }
-
             }
         } else {
 
@@ -421,7 +445,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 Log.e(LOGTAG, "TTS not accessible");
             }
             Log.e(LOGTAG, "Device not connected to Internet");
-
         }
     }
 
@@ -459,7 +482,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      */
     @Override
     public void processAsrError(int errorCode) {
-
         changeButtonAppearanceToDefault();
 
         //Possible bug in Android SpeechRecognizer: NO_MATCH errors even before the the ASR
@@ -600,7 +622,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 }
             }
         }.execute(userInput);
-
     }
 
     /**
@@ -640,7 +661,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     public void onTTSDone(String uttId) {
         botonGrabar.setBackgroundResource(R.drawable.round_botton);
-
     }
 
     /**
