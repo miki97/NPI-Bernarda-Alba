@@ -54,6 +54,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -796,4 +797,30 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         return BitmapFactory.decodeStream(ctx.getContentResolver()
                 .openInputStream(uri), null, bmOptions);
     }
+
+
+    //Para multitouch
+
+    Multitouch multiTouchListener = new Multitouch() {
+        @Override
+        public void dosDedosDobleClick() {
+            // Do what you want here, I used a Toast for demonstration
+            Toast.makeText(MainActivity.this, "Two Finger Double Tap", Toast.LENGTH_SHORT).show();
+        }
+        public void desplazamientoIzq(){
+            Toast.makeText(MainActivity.this, "desplaza izquierda", Toast.LENGTH_SHORT).show();
+        }
+        public void desplazamientoDer(){
+            Toast.makeText(MainActivity.this, "desplaza derecha", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(multiTouchListener.onTouchEvent(event))
+            return true;
+        return super.onTouchEvent(event);
+    }
+
+
 }
