@@ -26,7 +26,7 @@
     <string name="asr_error_permissions">No existen suficientes permisos</string>
     <string name="asr_error_network">Error de conexión</string>
     <string name="asr_error_networktimeout">Network operation timed out</string>
-    <string name="asr_error_nomatch">No recognition result matched</string>
+    <string name="asr_error_nomatch">No he entendido</string>
     <string name="asr_error_recognizerbusy">Servicio de reconocimiento ocupado</string>
     <string name="asr_error_server">Server sends error status</string>
     <string name="asr_error_speechtimeout">No se ha encontrado entrada de audio.</string>

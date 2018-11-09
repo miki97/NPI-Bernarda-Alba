@@ -50,6 +50,7 @@ import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MenuItem;
@@ -139,6 +140,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     ImageButton botonQR;
     ImageView bernarda;
     Shaker shaker;
+    boolean isDark = false;
 
     //attributes for the qr reader
     private static final int PHOTO_REQUEST = 10;
@@ -163,6 +165,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //Initialize the speech recognizer and synthesizer
         initSpeechInputOutput(this);
         inicializarSensorLuz();
+        inicializarCuriosidades();
 
         //Set up the speech button
         setSpeakButton();
@@ -170,6 +173,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         boton_ayuda = (ImageButton) findViewById(R.id.help_button);
         barraSuperior = (Toolbar) findViewById(R.id.toolbar);
         respuesta = (TextView) findViewById(R.id.respuesta);
+        respuesta.setMovementMethod(new ScrollingMovementMethod());
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
         botonQR = (ImageButton) findViewById(R.id.qr_button);
         bernarda = (ImageView) findViewById(R.id.bernarda);
@@ -180,10 +184,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //set th qr button
         setBotonQR();
 
-        curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de Bernarda, ¡Silencio, silencio he dicho!";
-        curiosidades[1] = "Uno de los temas de la obra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
-        curiosidades[2] = "Cada nombre de las 5 hijas tiene un significado, pregúntame por cada uno de los nombres y te ayudaré";
-        curiosidades[3] = "Toda la obra transcurre en la casa, un espacio cerrado comparable con un convento, un presidio o incluso un infierno";
 
         //configure de qrdetector
         if (savedInstanceState != null) {
@@ -204,6 +204,17 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 AIConfiguration.RecognitionEngine.System);
 
         aiDataService = new AIDataService(config);
+
+        setClearTheme();
+
+    }
+
+
+    void inicializarCuriosidades(){
+        curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de Bernarda, ¡Silencio, silencio he dicho!";
+        curiosidades[1] = "Uno de los temas de la obra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
+        curiosidades[2] = "Cada nombre de las 5 hijas tiene un significado, pregúntame por cada uno de los nombres y te ayudaré";
+        curiosidades[3] = "Toda la obra transcurre en la casa, un espacio cerrado comparable con un convento, un presidio o incluso un infierno";
 
     }
 
@@ -244,10 +255,11 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             public void onClick(View v) {
                 //Ask the user to speak
                 try {
+                    botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
                     speak(getResources().getString(R.string.initial_prompt), "ES", ID_PROMPT_QUERY);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            Toast.makeText(getApplicationContext(),"Grabando audio", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),"Grabando audio", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     });
@@ -290,8 +302,10 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 System.out.println(event.values[0]);
                 if(event.values[0] < 8) {
                     setDarkTheme();
-                } else {
+                    isDark = true;
+                } else if(isDark) {
                     setClearTheme();
+                    isDark = false;
                 }
             }
         }
@@ -372,7 +386,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                         sendMsgToChatBot(codigo);
                     }
                     if (barcodes.size() == 0) {
-                        Toast.makeText(MainActivity.this, "No se ha identificado nada", Toast.LENGTH_SHORT).show();
+                        //oast.makeText(MainActivity.this, "No se ha identificado nada", Toast.LENGTH_SHORT).show();
+                        sendMsgToChatBot("No he escuchado nada");
+
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "No se puede configurar el detector", Toast.LENGTH_SHORT).show();
@@ -681,7 +697,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     public void onTTSStart(String uttId) {
         Log.d(LOGTAG, "TTS starts speaking");
-        botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+        //botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
     }
 
     @Override
