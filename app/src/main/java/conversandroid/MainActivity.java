@@ -141,6 +141,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     ImageView bernarda;
     Shaker shaker;
     boolean isDark = false;
+    SensorManager mySensorManager;
+    Sensor LightSensor;
 
     //attributes for the qr reader
     private static final int PHOTO_REQUEST = 10;
@@ -161,6 +163,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
         //Set layout
         setContentView(R.layout.activity_main);
+
+
 
         //Initialize the speech recognizer and synthesizer
         initSpeechInputOutput(this);
@@ -207,6 +211,32 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
         setClearTheme();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("Actividad en pausa");
+        mySensorManager.unregisterListener(LightSensorListener);
+        shutdown();
+        shaker.close();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initSpeechInputOutput(this);
+        inicializarSensorLuz();
+        inicializarCuriosidades();
+        shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
+        System.out.println("Actividad start");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //System.out.println("Actividad en resumen");
+        //shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
     }
 
 
@@ -272,9 +302,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     private void inicializarSensorLuz(){
 
-        SensorManager mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
-        Sensor LightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        LightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if(LightSensor != null){
             System.out.println("available");
             mySensorManager.registerListener(
