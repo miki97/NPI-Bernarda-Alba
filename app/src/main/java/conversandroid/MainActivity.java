@@ -238,7 +238,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      */
     private void setSpeakButton() {
         // gain reference to speak button
-        ImageButton speak = findViewById(R.id.speech_btn);
+        final ImageButton speak = findViewById(R.id.speech_btn);
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,6 +248,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                     runOnUiThread(new Runnable() {
                         public void run() {
                             Toast.makeText(getApplicationContext(),"Grabando audio", Toast.LENGTH_SHORT).show();
+                            changeButtonAppearanceToListening();
                             startListening();
                         }
                     });
@@ -369,6 +370,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                         Barcode code = barcodes.valueAt(index);
                         String codigo = code.displayValue + "\n";
                         //Toast.makeText(MainActivity.this, codigo, Toast.LENGTH_SHORT).show();
+                        changeButtonAppearanceToDefault();
                         sendMsgToChatBot(codigo);
                     }
                     if (barcodes.size() == 0) {
@@ -382,6 +384,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                         .show();
             }
         }
+
     }
     /**
      * Explain to the user why we need their permission to record audio on the device
@@ -465,6 +468,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //Button button = findViewById(R.id.speech_btn); //Obtains a reference to the button
         //button.setText(getResources().getString(R.string.speechbtn_listening)); //Changes the button's message to the text obtained from the resources folder
         //button.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.speechbtn_listening), PorterDuff.Mode.MULTIPLY);  //Changes the button's background to the color obtained from the resources folder
+        final ImageButton speak = findViewById(R.id.speech_btn);
+        speak.setBackgroundResource(R.drawable.round_botton);
     }
 
     /**
@@ -474,6 +479,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     private void changeButtonAppearanceToDefault() {
         //Button button = findViewById(R.id.speech_btn); //Obtains a reference to the button
         //button.setText(getResources().getString(R.string.speechbtn_default)); //Changes the button's message to the text obtained from the resources folder
+        final ImageButton speak = findViewById(R.id.speech_btn);
+        speak.setBackgroundResource(R.drawable.round_botton);
         //button.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.speechbtn_default), PorterDuff.Mode.MULTIPLY);    //Changes the button's background to the color obtained from the resources folder
     }
 
@@ -681,7 +688,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     public void onTTSStart(String uttId) {
         Log.d(LOGTAG, "TTS starts speaking");
-        botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+
     }
 
     @Override
