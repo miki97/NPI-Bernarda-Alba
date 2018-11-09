@@ -211,7 +211,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         aiDataService = new AIDataService(config);
 
         setClearTheme();
-
     }
 
     @Override
@@ -255,22 +254,28 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
             @Override
             public void onClick(View v) {
-                //Creating the instance of PopupMenu
                 PopupMenu popup = new PopupMenu(MainActivity.this, boton_ayuda);
-                //Inflating the Popup using xml file
                 popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
 
-                //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+
+                        if(item.getTitle().equals("¿Qué preguntar?")){
+                            Intent intent = new Intent(getBaseContext(), que_preguntar.class);
+                            startActivity(intent);
+                        }else if(item.getTitle().equals("Ayuda")){
+                            Intent intent = new Intent(getBaseContext(), Welcome.class);
+                            startActivity(intent);
+                        }else{
+                            finish();
+                            System.exit(0);
+                        }
                         return true;
                     }
                 });
-
-                popup.show();//showing popup menu
+                popup.show();
             }
-        });//closing the setOnClickListener method
+        });
     }
 
 

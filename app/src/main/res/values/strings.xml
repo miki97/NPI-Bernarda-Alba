@@ -39,4 +39,7 @@
     <string name="title_activity_main">MainActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="que_preguntar">¿Qué preguntar?</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="salir">Salir</string>
 </resources>
