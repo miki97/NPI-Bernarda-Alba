@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="60" />
+                                                <entry key="scalingPercent" value="58" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -35,8 +35,11 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ff8e32" />
-                                      <entry key="foregroundImage" value="C:\Users\jaime\Desktop\careto.png" />
+                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
+                                      <entry key="foregroundImage" value="C:\Users\jaime\Desktop\npi\baston.png" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_foreground" />
                                       <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="outputName" value="conversandroid" />
                                     </map>
                                   </option>
                                 </PersistentState>
