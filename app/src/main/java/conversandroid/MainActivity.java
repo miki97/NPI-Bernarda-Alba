@@ -255,7 +255,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             public void onClick(View v) {
                 //Ask the user to speak
                 try {
-                    botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+                    changeButtonAppearanceToListening();
                     speak(getResources().getString(R.string.initial_prompt), "ES", ID_PROMPT_QUERY);
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -478,9 +478,11 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      * * It changes the color and the message of the speech button
      */
     private void changeButtonAppearanceToListening() {
-        //Button button = findViewById(R.id.speech_btn); //Obtains a reference to the button
-        //button.setText(getResources().getString(R.string.speechbtn_listening)); //Changes the button's message to the text obtained from the resources folder
-        //button.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.speechbtn_listening), PorterDuff.Mode.MULTIPLY);  //Changes the button's background to the color obtained from the resources folder
+        if(isDark){
+            botonGrabar.setBackgroundResource(R.drawable.round_botton_dark_var);
+        }else{
+            botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+        }
     }
 
     /**
@@ -488,9 +490,12 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      * * It changes the color and the message of the speech button
      */
     private void changeButtonAppearanceToDefault() {
-        //Button button = findViewById(R.id.speech_btn); //Obtains a reference to the button
-        //button.setText(getResources().getString(R.string.speechbtn_default)); //Changes the button's message to the text obtained from the resources folder
-        //button.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.speechbtn_default), PorterDuff.Mode.MULTIPLY);    //Changes the button's background to the color obtained from the resources folder
+        if(isDark){
+            botonGrabar.setBackgroundResource(R.drawable.round_botton_dark);
+        }else{
+            botonGrabar.setBackgroundResource(R.drawable.round_botton);
+
+        }
     }
 
     /**
@@ -498,7 +503,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      */
     @Override
     public void processAsrError(int errorCode) {
-        botonGrabar.setBackgroundResource(R.drawable.round_botton);
+        changeButtonAppearanceToDefault();
 
         //Possible bug in Android SpeechRecognizer: NO_MATCH errors even before the the ASR
         // has even tried to recognized. We have adopted the solution proposed in:
@@ -569,8 +574,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
             if(nBestList.size()>0){
                 sendMsgToChatBot(nBestList.get(0)); //Send the best recognition hypothesis to the chatbot                botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
-                botonGrabar.setBackgroundResource(R.drawable.round_botton);
-
+                changeButtonAppearanceToDefault();
             }
         }
     }
@@ -631,8 +635,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
                     final String chatbotResponse = result.getFulfillment().getSpeech();
                     respuesta.setText(chatbotResponse);
-                    botonGrabar.setBackgroundResource(R.drawable.round_botton);
-
+                    changeButtonAppearanceToDefault();
                     try {
                         speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
