@@ -498,7 +498,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
      */
     @Override
     public void processAsrError(int errorCode) {
-        changeButtonAppearanceToDefault();
+        botonGrabar.setBackgroundResource(R.drawable.round_botton);
 
         //Possible bug in Android SpeechRecognizer: NO_MATCH errors even before the the ASR
         // has even tried to recognized. We have adopted the solution proposed in:
@@ -568,8 +568,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             Log.d(LOGTAG, "ASR best result: " + nBestList.get(0));
 
             if(nBestList.size()>0){
-                changeButtonAppearanceToDefault();
-                sendMsgToChatBot(nBestList.get(0)); //Send the best recognition hypothesis to the chatbot
+                sendMsgToChatBot(nBestList.get(0)); //Send the best recognition hypothesis to the chatbot                botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
+                botonGrabar.setBackgroundResource(R.drawable.round_botton);
+
             }
         }
     }
@@ -630,6 +631,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
                     final String chatbotResponse = result.getFulfillment().getSpeech();
                     respuesta.setText(chatbotResponse);
+                    botonGrabar.setBackgroundResource(R.drawable.round_botton);
+
                     try {
                         speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
@@ -677,6 +680,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     public void onTTSDone(String uttId) {
         botonGrabar.setBackgroundResource(R.drawable.round_botton);
+        Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
     }
 
     /**
