@@ -134,17 +134,18 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     String textLIGHT_available, textLIGHT_reading;
 
 
-    TextView respuesta;
-    ImageButton botonGrabar;
-    ImageButton boton_ayuda;
-    Toolbar barraSuperior;
-    ImageButton botonQR;
-    ImageView bernarda;
-    Shaker shaker;
-    boolean isDark = false;
-    SensorManager mySensorManager;
-    Sensor LightSensor;
-
+    private TextView respuesta;
+    private ImageButton botonGrabar;
+    private ImageButton boton_ayuda;
+    private Toolbar barraSuperior;
+    private ImageButton botonQR;
+    private ImageView bernarda;
+    private Shaker shaker;
+    private boolean isDark = false;
+    private SensorManager mySensorManager;
+    private Sensor LightSensor;
+    private ArrayList<String> memoria;
+    private int punteroMemoria =0;
     //attributes for the qr reader
     private static final int PHOTO_REQUEST = 10;
     private BarcodeDetector detector;
@@ -165,7 +166,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //Set layout
         setContentView(R.layout.activity_main);
 
-
+        memoria = new ArrayList<String>();
 
         //Initialize the speech recognizer and synthesizer
         initSpeechInputOutput(this);
@@ -216,20 +217,21 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("Actividad en pausa");
+        stop();
+        /*System.out.println("Actividad en pausa");
         mySensorManager.unregisterListener(LightSensorListener);
         shutdown();
-        shaker.close();
+        shaker.close();*/
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
+        super.onStart();/*
         initSpeechInputOutput(this);
         inicializarSensorLuz();
         inicializarCuriosidades();
         shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
-        System.out.println("Actividad start");
+        System.out.println("Actividad start");*/
     }
 
     @Override
@@ -673,6 +675,11 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                     respuesta.setText(chatbotResponse);
                     changeButtonAppearanceToDefault();
                     try {
+                        if(memoria.size() == 5){
+                            memoria.remove(0);
+                        }
+                        memoria.add(chatbotResponse);
+                        punteroMemoria = memoria.size()-1;
                         speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
                     } catch (Exception e) { Log.e(LOGTAG, "TTS not accessible"); }
@@ -810,13 +817,42 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         @Override
         public void dosDedosDobleClick() {
             // Do what you want here, I used a Toast for demonstration
-            Toast.makeText(MainActivity.this, "Two Finger Double Tap", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "Two Finger Double Tap", Toast.LENGTH_SHORT).show();
+            if(memoria.size() > 0) {
+                try {
+                    speak(memoria.get(punteroMemoria), "ES", ID_PROMPT_QUERY);
+                } catch (Exception e) {
+                    Log.e(LOGTAG, "TTS not accessible");
+                }
+            }
         }
         public void desplazamientoIzq(){
-            Toast.makeText(MainActivity.this, "desplaza izquierda", Toast.LENGTH_SHORT).show();
+
+            //Toast.makeText(MainActivity.this, "desplaza izquierda", Toast.LENGTH_SHORT).show();
+            if(punteroMemoria < memoria.size()-1){
+                punteroMemoria +=1;
+                respuesta.setText(memoria.get(punteroMemoria));
+                try {
+                    speak(memoria.get(punteroMemoria), "ES", ID_PROMPT_QUERY);
+                } catch (Exception e) {
+                    Log.e(LOGTAG, "TTS not accessible");
+                }
+            }
+
         }
         public void desplazamientoDer(){
-            Toast.makeText(MainActivity.this, "desplaza derecha", Toast.LENGTH_SHORT).show();
+
+            //Toast.makeText(MainActivity.this, "desplaza derecha", Toast.LENGTH_SHORT).show();
+            if(punteroMemoria > 0){
+                punteroMemoria -=1;
+                respuesta.setText(memoria.get(punteroMemoria));
+                try {
+                    speak(memoria.get(punteroMemoria), "ES", ID_PROMPT_QUERY);
+                } catch (Exception e) {
+                    Log.e(LOGTAG, "TTS not accessible");
+                }
+            }
+
         }
     };
 
