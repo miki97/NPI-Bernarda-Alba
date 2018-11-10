@@ -17,10 +17,11 @@ public class Welcome extends FancyWalkthroughActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FancyWalkthroughCard fancywalkthroughCard1 = new FancyWalkthroughCard("Bernarda alba", "App para museo",R.drawable.conversandroid);
-        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("Pick the best", "Pick the right place using trusted ratings and reviews.",R.drawable.microphone_control);
-        FancyWalkthroughCard fancywalkthroughCard3 = new FancyWalkthroughCard("Choose your meal", "Easily find the type of food you're craving.",R.drawable.bernarda);
-        FancyWalkthroughCard fancywalkthroughCard4 = new FancyWalkthroughCard("Meal is on the way", "Get ready and comfortable while our biker bring your meal at your door.",R.drawable.bernarda);
+        FancyWalkthroughCard fancywalkthroughCard1 = new FancyWalkthroughCard("Bernarda alba", "Guía virtual para casa-museo de Bernarda Alba",R.drawable.conversandroid);
+        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("¡Agítame!", "Agítame o toca el botón de micrófono para poder hacerme una pregunta y podré ayudarte",R.drawable.microphone_control);
+        FancyWalkthroughCard fancywalkthroughCard3 = new FancyWalkthroughCard("Versión Dia/Noche", "El tema de la aplicación se adapta a la luz del ambiente.",R.drawable.microphone_control);
+        FancyWalkthroughCard fancywalkthroughCard4 = new FancyWalkthroughCard("Usa la cámara", "Escanea los códigos QR y podrás obtener información sobre ese lugar.",R.drawable.microphone_control);
+        FancyWalkthroughCard fancywalkthroughCard5 = new FancyWalkthroughCard("No uses sólo un dedo", "Haz doble click con dos dedos para volver a escuchar la respuesta, o arrastra dos dedos para ambos lados para navegar entre las últimas respuestas.",R.drawable.microphone_control);
 
         fancywalkthroughCard1.setBackgroundColor(R.color.white);
         fancywalkthroughCard1.setIconLayoutParams(300,300,0,0,0,0);
@@ -30,12 +31,15 @@ public class Welcome extends FancyWalkthroughActivity {
         fancywalkthroughCard3.setIconLayoutParams(300,300,0,0,0,0);
         fancywalkthroughCard4.setBackgroundColor(R.color.white);
         fancywalkthroughCard4.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard5.setBackgroundColor(R.color.white);
+        fancywalkthroughCard5.setIconLayoutParams(300,300,0,0,0,0);
         List<FancyWalkthroughCard> pages = new ArrayList<>();
 
         pages.add(fancywalkthroughCard1);
         pages.add(fancywalkthroughCard2);
         pages.add(fancywalkthroughCard3);
         pages.add(fancywalkthroughCard4);
+        pages.add(fancywalkthroughCard5);
 
         for (FancyWalkthroughCard page : pages) {
             page.setTitleColor(R.color.black);
