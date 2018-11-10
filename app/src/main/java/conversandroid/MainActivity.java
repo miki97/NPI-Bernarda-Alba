@@ -47,6 +47,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
@@ -217,28 +218,48 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     @Override
     protected void onPause() {
         super.onPause();
+        //stop();
+        System.out.println("Actividad en pause");
+        //mySensorManager.unregisterListener(LightSensorListener);
+        //shutdown();
+        //shaker.close();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         stop();
-        /*System.out.println("Actividad en pausa");
+        System.out.println("Actividad en stop");
         mySensorManager.unregisterListener(LightSensorListener);
-        shutdown();
-        shaker.close();*/
+        //shutdown();
+        shaker.close();
     }
 
     @Override
     protected void onStart() {
-        super.onStart();/*
-        initSpeechInputOutput(this);
+        super.onStart();
+
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        /*initSpeechInputOutput(this);
         inicializarSensorLuz();
         inicializarCuriosidades();
         shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
-        System.out.println("Actividad start");*/
+        System.out.println("Actividad restart");*/
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //System.out.println("Actividad en resumen");
-        //shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
+        System.out.println("eaeaeea");
+        //initSpeechInputOutput(this);
+        System.out.println("eaeaeea222222222222222");
+        inicializarSensorLuz();
+        inicializarCuriosidades();
+        shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
+        System.out.println("Actividad resume");
     }
 
 
@@ -420,11 +441,11 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                     for (int index = 0; index < barcodes.size(); index++) {
                         Barcode code = barcodes.valueAt(index);
                         String codigo = code.displayValue + "\n";
-                        //Toast.makeText(MainActivity.this, codigo, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, codigo, Toast.LENGTH_SHORT).show();
                         sendMsgToChatBot(codigo);
                     }
                     if (barcodes.size() == 0) {
-                        //oast.makeText(MainActivity.this, "No se ha identificado nada", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "No se ha identificado nada", Toast.LENGTH_SHORT).show();
                         sendMsgToChatBot("No he escuchado nada");
 
                     }
@@ -680,6 +701,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                         }
                         memoria.add(chatbotResponse);
                         punteroMemoria = memoria.size()-1;
+                        System.out.println("ensen111");
                         speak(chatbotResponse, "ES", ID_PROMPT_QUERY); //It always starts listening after talking, it is neccessary to include a special "last_exchange" intent in dialogflow and process it here
                                     //so that the last system answer is synthesized using ID_PROMPT_INFO.
                     } catch (Exception e) { Log.e(LOGTAG, "TTS not accessible"); }

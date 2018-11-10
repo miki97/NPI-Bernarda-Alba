@@ -18,21 +18,21 @@ public class Welcome extends FancyWalkthroughActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FancyWalkthroughCard fancywalkthroughCard1 = new FancyWalkthroughCard("Bernarda alba", "Guía virtual para casa-museo de Bernarda Alba",R.drawable.conversandroid);
-        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("¡Agítame!", "Agítame o toca el botón de micrófono para poder hacerme una pregunta y podré ayudarte",R.drawable.microphone_control);
-        FancyWalkthroughCard fancywalkthroughCard3 = new FancyWalkthroughCard("Versión Dia/Noche", "El tema de la aplicación se adapta a la luz del ambiente.",R.drawable.microphone_control);
-        FancyWalkthroughCard fancywalkthroughCard4 = new FancyWalkthroughCard("Usa la cámara", "Escanea los códigos QR y podrás obtener información sobre ese lugar.",R.drawable.microphone_control);
-        FancyWalkthroughCard fancywalkthroughCard5 = new FancyWalkthroughCard("No uses sólo un dedo", "Haz doble click con dos dedos para volver a escuchar la respuesta, o arrastra dos dedos para ambos lados para navegar entre las últimas respuestas.",R.drawable.microphone_control);
+        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("¡Agítame!", "Agítame o toca el botón de micrófono para poder hacerme una pregunta y podré ayudarte",R.drawable.icono_shake);
+        FancyWalkthroughCard fancywalkthroughCard3 = new FancyWalkthroughCard("Versión Dia/Noche", "El tema de la aplicación se adapta a la luz del ambiente.",R.drawable.icono_daynight);
+        FancyWalkthroughCard fancywalkthroughCard4 = new FancyWalkthroughCard("Usa la cámara", "Escanea los códigos QR y podrás obtener información sobre ese lugar.",R.drawable.ic_qr);
+        FancyWalkthroughCard fancywalkthroughCard5 = new FancyWalkthroughCard("No uses sólo un dedo", "Haz doble click con dos dedos para volver a escuchar la respuesta, o arrastra dos dedos para ambos lados para navegar entre las últimas respuestas.",R.drawable.icono_multitouch);
 
         fancywalkthroughCard1.setBackgroundColor(R.color.white);
-        fancywalkthroughCard1.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard1.setIconLayoutParams(400,400,0,0,0,0);
         fancywalkthroughCard2.setBackgroundColor(R.color.white);
-        fancywalkthroughCard2.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard2.setIconLayoutParams(400,400,0,0,0,0);
         fancywalkthroughCard3.setBackgroundColor(R.color.white);
-        fancywalkthroughCard3.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard3.setIconLayoutParams(400,400,0,0,0,0);
         fancywalkthroughCard4.setBackgroundColor(R.color.white);
-        fancywalkthroughCard4.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard4.setIconLayoutParams(400,400,0,0,0,0);
         fancywalkthroughCard5.setBackgroundColor(R.color.white);
-        fancywalkthroughCard5.setIconLayoutParams(300,300,0,0,0,0);
+        fancywalkthroughCard5.setIconLayoutParams(600,600,0,0,0,0);
         List<FancyWalkthroughCard> pages = new ArrayList<>();
 
         pages.add(fancywalkthroughCard1);
@@ -45,7 +45,7 @@ public class Welcome extends FancyWalkthroughActivity {
             page.setTitleColor(R.color.black);
             page.setDescriptionColor(R.color.black);
         }
-        setFinishButtonTitle("Get Started");
+        setFinishButtonTitle("Comenzar ahora");
         showNavigationControls(true);
         setColorBackground(R.color.fab_material_blue_900);
         //setImageBackground(R.drawable.restaurant);
