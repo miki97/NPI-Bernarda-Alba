@@ -6,34 +6,162 @@
     android:layout_height="match_parent"
     tools:context="conversandroid.que_preguntar">
 
-
-        <TextView
-            android:textSize="24sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿Qué preguntar?"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
-
-
     <LinearLayout
         android:id="@+id/mensaje"
-        android:layout_width="300dp"
-        android:layout_height="600dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="311dp"
+        android:layout_height="544dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:srcCompat="@drawable/ic_question" />
+
         <TextView
-            android:id="@+id/preguntas"
+            android:layout_width="314dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:gravity="center"
+            android:text="¿Qué preguntar?"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/Hermanas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical"
+            android:layout_alignStart="@+id/mensaje"
+
+            android:contentDescription="asdasd"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Pregúntame sobre las cinco hermanas"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="Pregúntame sobre las cinco hermanas" />
+
+        <TextView
+            android:id="@+id/hermanas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="¿Cómo es Martirio? ¿Cuántos años tiene Adela? ¿De quién esta enamorada Angustias?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="¿Cómo es Martirio? ¿Cuántos años tiene Adela? ¿De quién esta enamorada Angustias?" />
+
+        <TextView
+            android:id="@+id/hermanas2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="Preguntame sobre Bernarda"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
             android:textSize="20sp"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="Preguntame sobre Bernarda" />
+
+        <TextView
+            android:id="@+id/hermanas3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="¿Quién eres? ¿Cuántos años tienes? ¿Cómo eres? ¿Qué te ocurre?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="¿Quién eres? ¿Cuántos años tienes? ¿Cómo eres? ¿Qué te ocurre?" />
+
+        <TextView
+            android:id="@+id/hermanas4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="Pregúntame sobre Lorca"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="Pregúntame sobre Lorca" />
+
+        <TextView
+            android:id="@+id/hermanas5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:text="¿Cómo es Lorca? ¿Donde nació? ¿Cuándo nacio? ¿Cómo murió? ¿Cuándo escribió la obra?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="¿Cómo es Lorca? ¿Donde nació? ¿Cuándo nacio? ¿Cómo murió? ¿Cuándo escribió la obra?" />
+
+        <TextView
+            android:id="@+id/hermanas8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="Pregúntame sobre la obra"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="Pregúntame sobre la obra" />
+
+        <TextView
+            android:id="@+id/hermanas9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="¿Donde estamos? ¿Dónde se desarrolla?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="¿Donde estamos? ¿Dónde se desarrolla?" />
+
+        <TextView
+            android:id="@+id/hermanas6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="Pregúntame sobre la época"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="Pregúntame sobre la época" />
+
+        <TextView
+            android:id="@+id/hermanas7"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="asdasd"
+
+            android:gravity="center"
+            android:text="¿Qué es la guerra civil? ¿Cuál era el papel de la mujer?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:text="¿Qué es la guerra civil? ¿Cuál era el papel de la mujer?" />
 
     </LinearLayout>
 
