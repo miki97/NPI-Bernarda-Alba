@@ -14,11 +14,16 @@ import conversandroid.chatbot.R;
 
 public class Welcome extends FancyWalkthroughActivity {
 
+    /**
+     * Esta clase extiende una libreria que nos facilita la realizacion de un "tutorial" para explicar
+     * al usuario las distintas funcionalidades y como usar la aplicacion.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FancyWalkthroughCard fancywalkthroughCard1 = new FancyWalkthroughCard("Bernarda alba", "Guía virtual para casa-museo de Bernarda Alba",R.drawable.conversandroid);
-        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("¡Agítame!", "Agítame o toca el botón de micrófono para poder hacerme una pregunta y podré ayudarte",R.drawable.icono_shake);
+        FancyWalkthroughCard fancywalkthroughCard2 = new FancyWalkthroughCard("¡Agítame!", "Agítame para obtener un dato curioso, o pulsa el boton de micrófono para hacerme una pregunta",R.drawable.icono_shake);
         FancyWalkthroughCard fancywalkthroughCard3 = new FancyWalkthroughCard("Versión Dia/Noche", "El tema de la aplicación se adapta a la luz del ambiente.",R.drawable.icono_daynight);
         FancyWalkthroughCard fancywalkthroughCard4 = new FancyWalkthroughCard("Usa la cámara", "Escanea los códigos QR y podrás obtener información sobre ese lugar.",R.drawable.ic_qr);
         FancyWalkthroughCard fancywalkthroughCard5 = new FancyWalkthroughCard("No uses sólo un dedo", "Haz doble click con dos dedos para volver a escuchar la respuesta, o arrastra dos dedos para ambos lados para navegar entre las últimas respuestas.",R.drawable.icono_multitouch);

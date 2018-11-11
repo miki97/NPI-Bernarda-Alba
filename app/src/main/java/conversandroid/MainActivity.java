@@ -135,6 +135,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     String textLIGHT_available, textLIGHT_reading;
 
 
+
     private TextView respuesta;
     private ImageButton botonGrabar;
     private ImageButton boton_ayuda;
@@ -147,6 +148,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     private Sensor LightSensor;
     private ArrayList<String> memoria;
     private int punteroMemoria =0;
+
     //attributes for the qr reader
     private static final int PHOTO_REQUEST = 10;
     private BarcodeDetector detector;
@@ -159,6 +161,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     private AIDataService aiDataService=null;
     private final String ACCESS_TOKEN = "3b2ff8370cd040a985af74174f173b1c";
             // https://dialogflow.com/docs/reference/agent/#obtaining_access_tokens)
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +180,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //Set up the speech button
         setSpeakButton();
 
+        //Set up the button
         boton_ayuda = (ImageButton) findViewById(R.id.help_button);
         barraSuperior = (Toolbar) findViewById(R.id.toolbar);
         respuesta = (TextView) findViewById(R.id.respuesta);
@@ -184,7 +188,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         botonGrabar = (ImageButton) findViewById(R.id.speech_btn);
         botonQR = (ImageButton) findViewById(R.id.qr_button);
         bernarda = (ImageView) findViewById(R.id.bernarda);
-
         initializeHelpButton();
         setActionBar(barraSuperior);
 
@@ -225,6 +228,10 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //shaker.close();
     }
 
+    /** Funcion que se ejecuta cuando la aplicacion pasa a Hidden
+     * por lo que desactivamos los sensores para que no esten activos mientras
+     * la aplicacion no se usa
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -240,6 +247,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         super.onStart();
 
     }
+
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -250,19 +259,21 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         System.out.println("Actividad restart");*/
     }
 
+    /** Funcion que se ejecuta cuando la aplicacion vuelve a visible y por tanto debemos inicializar
+     * los sensores de nuevo, para un correcto funcionamiento
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("eaeaeea");
         //initSpeechInputOutput(this);
-        System.out.println("eaeaeea222222222222222");
         inicializarSensorLuz();
         inicializarCuriosidades();
         shaker = new Shaker (getBaseContext (), 3.0d, 2, this);
         System.out.println("Actividad resume");
     }
 
-
+    /** Funcion para inicializar el array de curiosidades, que se usara en la funcionalidad de Shake
+     */
     void inicializarCuriosidades(){
         curiosidades[0] = "Por razones políticas la obra no se representa en España hasta 1964, 28 años después de ser escrita, tal vez por aquello del grito final de Bernarda, ¡Silencio, silencio he dicho!";
         curiosidades[1] = "Uno de los temas de la obra es el sexo, todos y todas lo buscan pero solo está bien visto en el hombre";
@@ -272,6 +283,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     }
 
 
+    /** Funcion para inicializar el boton de ayuda, este boton mostrara un menu con tres opciones
+     */
     private void initializeHelpButton(){
         boton_ayuda.setOnClickListener(new View.OnClickListener() {
 
@@ -303,8 +316,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
 
     /**
-     * Initializes the search button and its listener. When the button is pressed, a feedback is shown to the user
-     * and the recognition starts
+     * Se inicializa el botton para poder conversar con el bot, cuando se hace click cambia de color
+     * para indicar que se esta escuchando.
      */
     private void setSpeakButton() {
         // gain reference to speak button
@@ -329,6 +342,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         });
     }
 
+    /**
+     * Funcion para inicializar el sensor de luz
+     */
     private void inicializarSensorLuz(){
 
         mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -346,13 +362,15 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         }
     }
 
+    /**
+     * sensorEventListener ira comprobando siempre que valores toma el sensor de luz, en el momento
+     * que la luminosidad sea menor que 8, se cambia el tema de la aplicacion
+     */
     private final SensorEventListener LightSensorListener
             = new SensorEventListener(){
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // TODO Auto-generated method stub
-
         }
 
         @Override
@@ -371,6 +389,11 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
     };
 
+    /**
+     * se cambia el color de fondo de la aplicacion y los iconos cambian de color para adaptarse
+     * a la luminosidad reducida.
+     */
+
     private void setDarkTheme() {
         findViewById(R.id.relativeLayout).setBackgroundColor(Color.rgb(50,50,50));
         respuesta.setTextColor(Color.WHITE);
@@ -378,6 +401,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         bernarda.setImageResource(R.drawable.ic_bernarda_alba_white);
         botonGrabar.setBackgroundResource(R.drawable.round_botton_dark);
     }
+
     private void setClearTheme() {
         findViewById(R.id.relativeLayout).setBackgroundColor(Color.WHITE);
         respuesta.setTextColor(Color.BLACK);
@@ -386,7 +410,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         botonGrabar.setBackgroundResource(R.drawable.round_botton);
     }
 
-    /** Funcion que activa el boton de QR
+    /**
+     * Funcion que activa el boton de QR y cuando se pulsa se comprueban los permisos y
+     * se activara el lector de QR.
     */
     private void setBotonQR(){
         botonQR.setOnClickListener(new View.OnClickListener() {
@@ -398,8 +424,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         });
     }
 
-    /** Funcion para recibir la peticion de permisos de escritura, es decir vamos
-        a leer un codigo qr
+    /**
+     * Funcion para recibir la peticion de permisos de escritura, es decir si son afirmativos
+     *  vamos a leer un codigo qr
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -414,6 +441,14 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         }
     }
 
+    /**
+     * Este metodo se usa para manejar el resultado de la peticion de realizar una foto, aqui manejaremos
+     * el resultado de dicha foto y lo que haremos sera comprobar si se ha leido correctamente el
+     * codigo QR, en caso afirmativo mandaremos el resultado a nuestro bot para obtener una respuesta
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -432,8 +467,6 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
 
                 //Toast.makeText(MainActivity.this, "DENTRO TRY", Toast.LENGTH_SHORT).show();
                 Bitmap bitmap = decodeBitmapUri(this,imageUri);
-
-                //decodeBitmapUri(this, imageUri);
                 if (detector.isOperational() && bitmap != null) {
                     //Toast.makeText(MainActivity.this, "DENTRO DEIF", Toast.LENGTH_SHORT).show();
                     Frame frame = new Frame.Builder().setBitmap(bitmap).build();
@@ -533,8 +566,7 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     }
 
     /**
-     * Provides feedback to the user to show that the app is listening:
-     * * It changes the color and the message of the speech button
+     * Cambiar el aspecto del boton para hablar, dependiendo de si estamos en el tema claro o oscuro
      */
     private void changeButtonAppearanceToListening() {
         if(isDark){
@@ -545,8 +577,8 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     }
 
     /**
-     * Provides feedback to the user to show that the app is idle:
-     * * It changes the color and the message of the speech button
+     * Cambiar el aspecto del boton para hablar al estado por defecto, dependiendo de si estamos
+     * en el tema claro o el tema oscuro
      */
     private void changeButtonAppearanceToDefault() {
         if(isDark){
@@ -772,6 +804,10 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         //botonGrabar.setBackgroundResource(R.drawable.round_botton_var);
     }
 
+    /**
+     * Metodo de la interfaz SHaker.Callback que nos permite dar una funcionaldiad cuando se detecta
+     * que se esta agitando el movil
+     */
     @Override
     public void shakingStarted() {
         //intent.setData(Uri.parse("http://www.google.es"));ç
@@ -785,12 +821,19 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         } catch (Exception e) { Log.e(LOGTAG, "TTS not accessible"); }
     }
 
+    /**
+     * Metodo de la interfaz Shaker.Callback que nos permite dar una funcionaldiad cuando se detecta
+     * el fin del moviemiento, en nuestro caso no queremos realizar ninguna accion
+     */
     @Override
     public void shakingStopped() {
 
     }
 
-    //Funcion para tomar una foto para la funcion de lectura qr
+    /**
+     * Funcion para realizar la peticion para realziar una foto, se usa para captar el codigoQR
+     * Los resultados de la foto se analizaran en startActivityForResult
+     */
     private void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photo = new File(Environment.getExternalStorageDirectory(), "picture.jpg");
@@ -800,6 +843,10 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         startActivityForResult(intent, PHOTO_REQUEST);
     }
 
+    /**
+     * Metodo usado para savar la instancia cuando se cambia a la vista de la camara
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (imageUri != null) {
@@ -809,12 +856,23 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Metodo para realizar el intent del escanear un archivo, para poder analizar el codigo QR archivado
+     * en un documento en el dispositivo.
+     */
     private void launchMediaScanIntent() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(imageUri);
         this.sendBroadcast(mediaScanIntent);
     }
 
+    /**
+     * Funcion utilizada para decodificar el codigo QR y obtener la informacion almacenada en él
+     * @param ctx
+     * @param uri
+     * @return
+     * @throws FileNotFoundException
+     */
     private Bitmap decodeBitmapUri(Context ctx, Uri uri) throws FileNotFoundException {
         int targetW = 600;
         int targetH = 600;
@@ -833,9 +891,15 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
     }
 
 
-    //Para multitouch
-
+    /**
+     * Se activa el listener que estara analizando los toques de la pantalla. La clase multitouch define
+     * cuando se activaran estos metodos, analizando la pantalla y los cambios que se proucen en las
+     * pulsaciones. Estos metodos nos sirven para dar funcionalidad a los patrones que el listener reconoce
+     */
     Multitouch multiTouchListener = new Multitouch() {
+        /**
+         * metodo que asigna una funcionalidad al dobletap con dos dedos
+         */
         @Override
         public void dosDedosDobleClick() {
             // Do what you want here, I used a Toast for demonstration
@@ -848,6 +912,10 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
                 }
             }
         }
+
+        /**
+         * metodo que asigna una funcionalidad al desplazamiento a la izquierda con dos dedos
+         */
         public void desplazamientoIzq(){
 
             //Toast.makeText(MainActivity.this, "desplaza izquierda", Toast.LENGTH_SHORT).show();
@@ -862,6 +930,9 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
             }
 
         }
+        /**
+         * metodo que asigna una funcionalidad al desplazamiento a la derecha con dos dedos
+         */
         public void desplazamientoDer(){
 
             //Toast.makeText(MainActivity.this, "desplaza derecha", Toast.LENGTH_SHORT).show();
@@ -878,6 +949,12 @@ public class MainActivity extends VoiceActivity implements Shaker.Callback {
         }
     };
 
+    /**
+     * metodo para detectar que tenemos un nuevo evento en la pantalla y debemos llamar a nuestro listener
+     * para que analize este nuevo cambio.
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(multiTouchListener.onTouchEvent(event))

@@ -13,6 +13,10 @@ import java.util.List;
 
 import conversandroid.chatbot.R;
 
+/**
+ * Esta actividad se usa para inicializar la actividad que muestra preguntas comunes y servira como
+ * ayuda para el usuario
+ */
 public class que_preguntar  extends AppCompatActivity {
 
     Toolbar barraSuperior;
@@ -20,6 +24,7 @@ public class que_preguntar  extends AppCompatActivity {
     int uiOptions;
     View decorView;
     ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
