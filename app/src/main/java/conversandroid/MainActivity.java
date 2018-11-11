@@ -21,14 +21,11 @@
 package conversandroid;
 
 /**
- * Example activity with speech input and output that connects to
- * a DialogFlow chatbot previously created.
- *
- * Note: it will not be functional until you do not insert your own
- * access token (see line 72)
- *
- * @author Zoraida Callejas, Michael McTear, David Griol
- * @version 4.0, 04/06/18
+ * Aplicacion desarrollada para el museo de Bernarda Alba
+ * donde podemos conversar con la protagonista y con distintos
+ * sensores que nos facilitaran la interacción con la aplicación
+ * y la experiencia en el museo
+ * @autor: Miguel Angel Lopez, Jaime Frias, Pablo Torres
  */
 
 import android.Manifest;
@@ -69,33 +66,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.app.Activity;
-import android.widget.TextView;
-
-
-
-//los que repito
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 import java.util.Random;
 
 import com.google.android.gms.vision.Frame;
@@ -104,8 +74,6 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
